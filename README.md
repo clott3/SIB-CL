@@ -46,7 +46,7 @@ Training of the neural networks for all problems introduced in the article (i.e.
 
 `--iden`: required; specify identifier for saving of models, training logs and results
 
-Augmentation flags: `--translate_pbc` (set flag to include rolling translations), `--pg_uniform` (set flag to sample point group symmetry transformations uniformly), `--scale` (set flag to scale unit cell - used for PhC), `--rotate` (set flag to do 4-fold rotations), `--flip` (set flag to perform horizontal and vertical mirrors). If `--pg_uniform` is used, there is no need to include `--rotate` and `--flip`.
+Invariances flags: `--translate_pbc` (set this flag to include rolling translations), `--pg_uniform` (set this flag to uniformly sample the point group symmetry transformations), `--scale` (set this flag to scale unit cell - used for PhC), `--rotate` (set this flag to do 4-fold rotations), `--flip` (set this flag to perform horizontal and vertical mirrors). If `--pg_uniform` is used, there is no need to include `--rotate` and `--flip`.
 
 Other optional flags can be displayed via `python main.py --help`. 
 Examples of shell scripts can be found in the `sh_scripts` folder.
@@ -55,6 +55,6 @@ Examples of shell scripts can be found in the `sh_scripts` folder.
 By default, running `main.py` will create 3 subdirectories:
 - `./pretrained_models/`: state dictionaries of pretrained models at various epochs indicated in the `eplist` variable will be saved to this directory. These models are used for further fine-tuning.
 - `./dicts/`: stores the evaluation losses on the test set as dictionaries saved as `.json` files. The results can then be plotted using `plot_results.py`.
-- `./tlogs/`: training curves for pre-training and fine-tuning are stored in dictionaries saved as `.json` files. The training curves can be plotted using `get_training_logs.py`. Alternatively, the `--log_to_tensorboard` flag can be set and viewed using tensorboard; in this case, the dictionaries will not be generated.
+- `./tlogs/`: training curves for pre-training and fine-tuning are stored in dictionaries saved as `.json` files. The training curves can be plotted using `get_training_logs.py`. Alternatively, the `--log_to_tensorboard` flag can be set and training curves can be viewed using tensorboard; in this case, the dictionaries will not be generated.
 
 
