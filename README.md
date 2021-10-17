@@ -14,7 +14,7 @@ A python3 environment can be created prior to this:
 
 ## Dataset Generation
 ### Photonic Crystals (PhCs)
-Periodic unit cells are defined using a level set of a Fourier sum; different unit cells can be generated using the `get_random()` method of the `FourierPhC` class defined in `fourier_phc.py`.
+Periodic unit cells are defined using a level set of a Fourier sum; different unit cells can be generated using the `get_random()` method of the `FourierPhC` class defined in `generate_datasets/PhC/fourier_phc.py`.
 
 To generate the labeled PhC datasets, we first compute their band structures using MPB. This can be executed via:
 
@@ -35,14 +35,14 @@ To generate low resolution dataset, `python tise_gendata.py --h5filename='tise3d
 To generate qho dataset, `python tise_genqho.py --h5filename='tise2d_qho' --ndim 2 --nsam 10000`
 
 ## SIB-CL and baselines training
-Training of the neural networks for all problems introduced in the article (i.e. PhC DOS prediction, PhC Band structure prediction, TISE ground state energy prediction using both low resolution or QHO data as surrogate) can all be executed using `main.py` by indicating the appropriate flags (see below). This code also allows training via the SIB-CL framework or any of the baselines, again with the use of the appropriate flag. There are also other possible prediction problems, not presented in the article, such as predicting TISE wavefunctions and single band structure.
+Training of the neural networks for all problems introduced in the article (i.e. PhC DOS prediction, PhC Band structure prediction, TISE ground state energy prediction using both low resolution or QHO data as surrogate) can all be executed using `main.py` by indicating the appropriate flags (see below). This code also allows training via the SIB-CL framework or any of the baselines, again with the use of the appropriate flag. This code also contains other prediction problems not presented in the article, such as predicting higher energy states of TISE, TISE wavefunctions and single band structure.
 
 ### Important flags: 
 `--path_to_h5`: indicate directory where h5 datasets are located. The filenames defined in the dataset classes in `datasets_PhC_SE.py` should also be modified according to the names used during dataset generation. 
 
 `--predict`: defines prediction task. Options: `'DOS'`, `'bandstructures'`, `'eigval'`, `'oneband'`, `'eigvec'`
 
-`--train`: specify if training via SIB-CL or baselines. Options: `'sibcl'`, `'tl'`, `'sl'`, `'ssl'` (`'ssl'` performs regular contrastive learning without surrogate dataset)
+`--train`: specify if training via SIB-CL or baselines. Options: `'sibcl'`, `'tl'`, `'sl'`, `'ssl'` (`'ssl'` performs regular contrastive learning without surrogate dataset). For invariance-boosted baselines, e.g. TL-I or SL-I, specify `'tl'` or `'sl'` here and add the relevant invariances flags (see below).
 
 `--iden`: required; specify identifier for saving of models, training logs and results
 
