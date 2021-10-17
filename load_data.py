@@ -1,4 +1,5 @@
 from datasets_PhC_SE import PhC2D, TISEdata
+import numpy as np
 
 def get_TISE_datasets(args):
     if args.train == 'ssl' or args.train == 'fromscratch':
@@ -15,15 +16,16 @@ def get_TISE_datasets(args):
     tgt_train_ds = TISEdata(args.path_to_h5, args.nsam , validsize = totalnum-2000-args.nsam,
                             testsize = 2000,predict=args.predict,ndim = args.ndim,
                             neval = args.neval,domain = 'target', split = 'train',
-                            lowres = 5, downres = 32,
+                            lowres = 5, downres = 32,tisesource = args.tisesource,
                             ftsetind = pick_random_ftset)
 
     tgt_test_ds = TISEdata(args.path_to_h5, args.nsam , validsize = totalnum-2000-args.nsam,
                             testsize = 2000, predict=args.predict,ndim = args.ndim,
                             neval = args.neval, domain = 'target', split = 'test',
-                            lowres = 5, downres = 32,
+                            lowres = 5, downres = 32,tisesource = args.tisesource,
                             ftsetind = pick_random_ftset)
     return src_ds, tgt_train_ds, tgt_test_ds
+
 
 def get_PhC_datasets(args):
     if args.train == 'ssl' or args.train == 'fromscratch':
@@ -45,6 +47,7 @@ def get_PhC_datasets(args):
                             split = 'test', band = args.tgtband, ftsetind = pick_random_ftset)
     return src_ds, tgt_train_ds, tgt_test_ds
 
+
 def get_unlabeled_datasets(args):
     ntarget = args.nsource*2
     if 'eig' in args.predict:
@@ -55,6 +58,6 @@ def get_unlabeled_datasets(args):
                                 downres = 32)
     else:
         ul_ds = PhC2D(args.path_to_h5, ntarget, validsize = 0, testsize =0,
-                            predict=args.predict,mode=args.mode,domain = 'target',
+                            predict=args.predict,domain = 'target',
                             targetmode = 'unlabeled', split = 'train')
     return ul_ds

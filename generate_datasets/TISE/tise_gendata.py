@@ -2,7 +2,9 @@ import numpy as np
 from solveTISE import TISE
 import time
 import h5py
-from PhC.fourier_phc import FourierPhC
+import sys
+sys.path.append('./../PhC/')
+from fourier_phc import FourierPhC
 from scipy.ndimage import gaussian_filter
 import matplotlib.pyplot as plt
 from skimage.transform import resize
@@ -13,9 +15,9 @@ import argparse
 import math
 
 """instructions:
-- to generate target for UC sampled at target res add --no_orires flag
+- to generate target for UC sampled at target res use defaults
 - to generate target for UC sampled at some other res, specify --orires 1200 (e.g.)
-- to generate lowres, specify --lowres flag. for UC sampled at target res add specify --orires 64 (target res)"""
+- to generate lowres, specify --lowres flag. for UC sampled at target res add specify --orires 32 (target res)"""
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--ngrid',type=int, help='number of grid points; default = 32', default=32)
@@ -34,13 +36,13 @@ parser.add_argument('--minfill',type=float, help='maximum filling ratio',default
 parser.add_argument('--sigmafactor',type=float, help='sigma for filtered',default=20.)
 parser.add_argument('--lowres',action='store_true', help='create lowres and save high res input')
 parser.add_argument('--xmax',type=float,default=5.)
-parser.add_argument('--maxeps',type=float, default=0.5)
-parser.add_argument('--orires',type=int, default=1200)
-parser.add_argument('--no_orires', action='store_true')
+parser.add_argument('--maxeps',type=float, default=1.0)
+parser.add_argument('--orires',type=int, help ='to create high resolution of original, e.g. 1200, default not used', default=0)
+# parser.add_argument('--no_orires', action='store_true')
 
 # parser.add_argument('--refgrid',type=int, default=32)
 parser.add_argument('--epsneg', action='store_true')
-parser.add_argument('--epszero', action='store_true')
+# parser.add_argument('--epszero', action='store_true')
 parser.add_argument('--centre_min', action='store_true')
 
 parser.add_argument('--use_fill', action='store_true')
@@ -50,7 +52,7 @@ args = parser.parse_args()
 N = args.ngrid
 if args.lowres:
     N = args.lrgrid
-h5out = args.h5filename
+h5out = args.h5filename + ".h5"
 xmax = args.xmax
 maxF = args.maxF
 orires = args.orires
@@ -61,9 +63,7 @@ np.random.seed(args.seed)
 
 phc = FourierPhC(dim=ndim,maxF=maxF,maxeps=args.maxeps, mineps=0.,\
                 minfill=args.minfill,maxfill=args.maxfill,\
-                use_fill = args.use_fill, \
-                use_uniform = True, use_eps2=False, use_eps3=False,\
-                centre_min = args.centre_min)
+                use_fill = args.use_fill)
 
 if not args.no_createh5:
     with h5py.File(h5out,"a") as f:
@@ -77,17 +77,17 @@ if not args.no_createh5:
 
 for i in range(args.nsam):
     uccoefs, ucgvecs, epsin, epsout, uclevel, filling = phc.get_random()
-    epslow = np.min([epsin,epsout])
+    # epslow = np.min([epsin,epsout])
     epshi = np.max([epsin,epsout])
     if args.epsneg: # if epsneg, we only sample 1 eps and take negative
         epslow = -epshi
-    if args.epszero:
+    else:
         epslow = 0
-    totalres = int(orires/0.6) # this is the original sample, res 2000
-    if args.no_orires:
-        totalres = int(args.ngrid/0.6) # this is the original sample, res 2000
-    # n = 80
-    # math.ceil(n/0.6)-2*math.ceil(math.ceil(n/0.6)/5)
+    if args.orires != 0:
+        totalres = int(orires/0.6) # this is the original sample, res 2000
+    else:
+        totalres = int(args.ngrid/0.6)
+
     input = phc.getunitcell(uccoefs, ucgvecs, epslow, epshi, uclevel,ucres=totalres)
 
     if args.ndim == 2:
@@ -98,7 +98,7 @@ for i in range(args.nsam):
     input = gaussian_filter(input,(totalres/args.sigmafactor)) # this is our high res input from [-xmax,xmax] inclusive of boundaries.
 
     if args.ndim == 2:
-        if not args.no_orires:
+        if args.orires != 0:
             x = np.linspace(-xmax,xmax,input.shape[0])
             y = np.linspace(-xmax,xmax,input.shape[1])
             f = interpolate.interp2d(x,y, input)
@@ -108,7 +108,7 @@ for i in range(args.nsam):
         inputsolve = input[1:-1,1:-1] # Dirichlet BC: ignore boundary points
 
     elif args.ndim == 3:
-        if not args.no_orires:
+        if args.orires != 0:
             x = np.linspace(-xmax,xmax,input.shape[0])
             y = np.linspace(-xmax,xmax,input.shape[1])
             z = np.linspace(-xmax,xmax,input.shape[2])

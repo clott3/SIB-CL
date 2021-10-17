@@ -1,6 +1,5 @@
 
 class DOSconfig():
-    Lvpj = [1024,256]
     use_projector = True
     # mode = 'ELdiff'
     ndim = 2
@@ -8,6 +7,7 @@ class DOSconfig():
     latent_dim = 1024
     Lv = [64,256,256,1024,1024]
     Lvp = [1024,1024,512]
+    Lvpj = [1024,256]
     ft_lossfn = 'L1'
     pt_lossfn = 'log'
     use_projector = True
@@ -18,9 +18,10 @@ class BSconfig():
     # mode = 'raw'
     ndim = 2
     ks = 9
-    latent_dim = 256
+    latent_dim = 1024
     Lv = [64,256,256,256,1024]
     Lvp = [256,512,512] # we dont add too many nodes here since there's a branch for each band
+    Lvpj = [1024,256]
     ft_lossfn = 'MSE'
     pt_lossfn = 'MSE'
     use_projector = True
@@ -34,6 +35,7 @@ class TISEconfig():
     latent_dim = 256
     Lv = [64,256,256,256,256]
     Lvp = [256,256,32]
+    Lvpj = [1024,256]
     ft_lossfn = 'MSE'
     pt_lossfn = 'MSE'
     use_projector = True

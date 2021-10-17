@@ -22,11 +22,10 @@ Nk = args.kgrid
 numbands = args.nbands
 nsam = args.nsam
 sg= args.sgnum
-# root_dir='/Users/charlotteloh/Desktop/gen_sg/'
 root_dir = args.root_dir
 prefix = args.h5prefix
-txtfiledir = root_dir+f'txt_{prefix}_sg{sg}'
-fcom = root_dir+f'{prefix}-sg{sg}-tm.h5'
+txtfiledir = root_dir+f'txt_{prefix}'
+fcom = root_dir+f'{prefix}-tm.h5'
 
 ## microcell
 dk = 1/Nk #assume sample unit cell of unit length, Nkpoints = Nintervals
@@ -46,7 +45,7 @@ if not os.path.exists(txtfiledir):
 ii=1
 for part in args.seeds:
 # for part in [1,2]:
-    f1 = h5py.File(root_dir+f'{prefix}-sg{sg}-s{part}-tm.h5',"r")
+    f1 = h5py.File(root_dir+f'{prefix}-s{part}-tm.h5',"r")
     rvecs = f1['universal/rvecs'][()]
     ucgvecs = f1['universal/ucgvecs'][()]
 
@@ -125,21 +124,3 @@ outband.close()
 outvelGRR.close()
 outfreqGRR.close()
 print(ii-1) # to input as nsam for bash script
-
-# f1 = h5py.File(f'/Users/charlotteloh/Desktop/gen_sg/mf2-c0-s{part}-tm.h5',"a")
-# f1.keys()
-# f1.close()
-
-
-# import matplotlib.pyplot as plt
-# f1 = h5py.File(f'/Users/charlotteloh/Desktop/gen_sg/mf1-sg1-k1-b1-tm.h5',"r")
-# f2 = h5py.File(f'/Users/charlotteloh/Desktop/gen_sg/mf1-sg1-k25-tm.h5',"r")
-# for i in range(1,10):
-#     e1 = f1['unitcell/mpbepsimage/'+str(i)][()]
-#     e2 = f2['unitcell/mpbepsimage/'+str(i)][()]
-#     plt.figure()
-#     plt.subplot(121)
-#     plt.imshow(e1)
-#     plt.subplot(122)
-#     plt.imshow(e2)
-#     print( np.sum(e1 == e2))

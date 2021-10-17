@@ -26,7 +26,7 @@ args = parser.parse_args()
 
 np.random.seed(args.seed)
 
-phc = FourierPhC(dim=args.ndim,maxF=args.maxF,maxeps=20., mineps=1.,use_uniform = False)
+phc = FourierPhC(dim=args.ndim,maxF=args.maxF,maxeps=20., mineps=1.)
 
 if args.sgnum == 1:
     uccoefs, ucgvecs, epsin, epsout, uclevel, filling = phc.get_random()

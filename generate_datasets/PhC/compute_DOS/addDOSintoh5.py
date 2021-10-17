@@ -52,8 +52,8 @@ sgnum= args.sgnum
 root_dir = args.root_dir
 prefix = args.h5prefix
 
-dosfolder = root_dir+f'DOS_{prefix}_sg{sgnum}/'
-fcom = root_dir+f'{prefix}-sg{sgnum}-tm.h5'
+dosfolder = root_dir+f'DOS_{prefix}/'
+fcom = root_dir+f'{prefix}-tm.h5'
 
 # ii=1
 # for part in [1,2,3,4,5,6,7]:

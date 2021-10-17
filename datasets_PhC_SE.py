@@ -144,14 +144,15 @@ class TISEdata(data.Dataset):
         tisesource = 'lr', ftsetind = None):
 
         self.input_size = 64
-        self.maxeps = me
+
         rr = f'_n{downres}' if ndim == 3 else ''
 
         if domain == 'source':
             if tisesource == 'lr':
+                print("tise source = LR")
                 filename = f'tise_{ndim}d_mf2_sigfac20_xmax5_me1.0_e0{rr}_LR{lowres}.h5'
 
-            elif tisesource == 'sho':
+            elif tisesource == 'qho':
                 if ndim == 3:
                     filename = f'tise_{ndim}d_sho_v1_n{downres}.h5'
                 elif ndim == 2:
@@ -207,7 +208,7 @@ class TISEdata(data.Dataset):
                     y = f['eigval_fil/'+str(memb)][()][:neval]
                     y = np.real(y)
 
-                    if domain == 'source' and tisesource == 'sho':
+                    if domain == 'source' and tisesource == 'qho':
                         y = f['grounde/'+str(memb)][()]
                         y = np.expand_dims(np.real(y),1)
 
@@ -226,7 +227,7 @@ class TISEdata(data.Dataset):
 
         # normalize x data
         mineps = 0
-        self.x_data = (np.array(self.x_data).astype('float32')-mineps) / (self.maxeps-mineps) # normalize
+        self.x_data = (np.array(self.x_data).astype('float32')-mineps) / (1.-mineps) # normalize
         self.x_data = np.expand_dims(self.x_data,1) # add 1 channel for CNN
         self.y_data = np.array(self.y_data).astype('float32')
 

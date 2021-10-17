@@ -1,39 +1,30 @@
-function run_GRR(sgnum, h5prefix, nsam, rootdir)
-    % function DOS_GGR
-    %% DOS calculation using generalized GR (GGR) method
-    % The program is for DOS calculation using GGR method, referring
-    % to article "Generalized Gilat-Raubenheimer Method for Density-of-States 
-    % Calculation in Photonic Crystals". For more information, please refer to our website:
+function run_GRR(h5prefix, nsam, rootdir)
+    %% DOS calculation using the GGR method
+    %
+    % This code is replicated from
     % https://github.com/boyuanliuoptics/DOS-calculation/edit/master/DOS_GGR.m
-    % The first edition is finished in Nov. 20th, 2017.
-    %% Important notice for initial parameters!!!
-    % Necessary parameters: 
-    % 0. three files include band frequencies on high symmetry points,
-    % band frequencies in the whole Brillouin zone, group velocities in the
-    % whole Brillouin zone; 
-    % 1. the reciprocal vectors; 2. the number of k points; 3. number of bands.
-    % Optional parameters: 4. maximum and minimum of band frequency (w_max, w_min); 
-    % 5. resolution about the frequency  (N_w); 6. inter number of points between 
-    % two high symmetry k points; 7. parameters about plot like color, fontsize, etc;
-    nsam
-    % Settings for DOS
-    ceilDOS = 1;   % impose ceiling on DOS array (1) or not (0) 
-    maxDOS=40;   
-    w_max_custom = -1; % the range of frequency, '-1' denotes default settings
-    w_min_custom=0;
+    % for the article "Generalized Gilat-Raubenheimer Method for
+    % Density-of-States Calculation in Photonic Crystals".
+    %
+    % Code is replicated here only with minor edits to the formatting and
+    % directories so that dataset generation code runs smoothly
+    %
+    % Please refer to the original version
+    % (https://github.com/boyuanliuoptics/DOS-calculation/edit/master/DOS_GGR.m)
+    % and cite the original authors accordingly!
 
-    % Input parameters here 
-%     nsam = 6035;
+    % Parameters to define
+    % nsam = 6035;
     kin = 25;
     N_band = 10;
-    inputdir = strcat(rootdir,'txt_',string(h5prefix),'_sg',string(sgnum))
-    outputdir = strcat(rootdir,'DOS_',string(h5prefix),'_sg',string(sgnum))
-    
+    inputdir = strcat(rootdir,'txt_',string(h5prefix))
+    outputdir = strcat(rootdir,'DOS_',string(h5prefix))
+
     if ~exist(outputdir, 'dir')
       mkdir(outputdir);
     end
 
-    for sample=1:nsam 
+    for sample=1:nsam
 
         if strlength(string(sample))==1
             idx = strcat('_','0',string(sample));
@@ -167,12 +158,12 @@ function run_GRR(sgnum, h5prefix, nsam, rootdir)
         file_output=fopen(file_DOSdata,'wt');
 
         for nprint_w=1:(N_w+1)
-            fprintf(file_output,'%.10f %.10f\n',w_min+step_w*(nprint_w-1),DOSarray(nprint_w));  
+            fprintf(file_output,'%.10f %.10f\n',w_min+step_w*(nprint_w-1),DOSarray(nprint_w));
         end
         fclose(file_output);
 
     %     figure;
     %     plot(DOSarray)
 
-    end   
-end 
+    end
+end

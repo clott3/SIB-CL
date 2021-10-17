@@ -4,22 +4,24 @@ import torch.nn.functional as F
 import numpy as np
 
 def calpercloss(output,target):
-    'Defines fractional loss of net output with data. This function is used for evaluation of bandstructures'
+    '''Defines fractional loss of net output with data.
+    This function is used for evaluation of bandstructures'''
     loss=torch.abs(output - target)
     loss=torch.div(loss,target)
     loss[loss==float("Inf")] = 0 #ignore divide by 0 errors
     loss[torch.isnan(loss)]=0 #ignore nan errors
     loss=torch.mean(loss)
     return loss
-
-def KLdiv(p,q):
-    '''defines KL div loss for baseline_with_AE'''
-    return torch.sum(p*(p/q).log())
+#
+# def KLdiv(p,q):
+#     '''defines KL div loss for baseline_with_AE'''
+#     return torch.sum(p*(p/q).log())
 
 def calDOSloss(output,target,startpt=100):
-    '''Defines fractional loss of net output with data. This function is used for evaluation of DOS.
-    param: startpt defines starting no. of points to not compute. We exclude first 100 data points since loss there almost 0'''
-    ## TODO: To add in no. of points to compute as variable.
+    '''Defines fractional loss of net output with data.
+    This function is used for evaluation of DOS.
+    param: startpt defines starting no. of points to not compute.
+    We exclude first 100 data points since variation across samples is almost 0'''
     diff = torch.abs(target[:,startpt:]-output[:,startpt:])
     numerator = torch.sum(diff,axis=1) # this has dim batchsize
     denominator = torch.sum(torch.abs(target[:,startpt:]),axis=1) # this has dim batchsize
@@ -50,7 +52,8 @@ class FracLoss(nn.Module):
         return loss
 
 class NTXentLoss(nn.Module):
-    ''' this implements the Normalized Temperature Cross Entropy Loss use to compute Contrastive Loss in the SimCLR paper.
+    ''' this implements the Normalized Temperature Cross Entropy Loss use to
+    compute Contrastive Loss in the SimCLR paper.
     This code is adapted from https://github.com/sthalles/SimCLR'''
 
     def __init__(self, device, batch_size, temperature, use_attention = False):
@@ -83,6 +86,10 @@ class NTXentLoss(nn.Module):
         # filter out the scores from the positive samples
         l_pos = torch.diag(similarity_matrix, self.batch_size)
         r_pos = torch.diag(similarity_matrix, -self.batch_size)
+        print("batchsize",self.batch_size)
+        print("lpos",l_pos.shape)
+        print("rpos",r_pos.shape)
+
         positives = torch.cat([l_pos, r_pos]).view(2 * self.batch_size, 1)
 
         negatives = similarity_matrix[self.mask_same].view(2 * self.batch_size, -1)

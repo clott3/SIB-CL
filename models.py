@@ -52,13 +52,14 @@ class Encoder(nn.Module):
                 nn.ReLU(),
                 nn.MaxPool3d(2,2)
                 )
-        self.avgpool = nn.AdaptiveAvgPool3d((1, 1, 1))
+        self.avgpool3d = nn.AdaptiveAvgPool3d((1, 1, 1))
+        self.avgpool2d = nn.AdaptiveAvgPool2d((1, 1))
+
         self.fcpart = nn.Sequential(
             nn.Linear(Lv[2] * 1 * 1, Lv[3]),
             nn.ReLU(),
             # nn.Dropout(p=0.2),
             nn.Linear(Lv[3], Lv[4]),
-            # nn.ReLU()
             )
         self.Lv = Lv
         self.dim = dim
@@ -66,9 +67,11 @@ class Encoder(nn.Module):
     def forward(self, x):
         if self.dim == 2:
             x = self.enc_block2d(x)
+            x = self.avgpool2d(x)
+
         elif self.dim == 3:
             x = self.enc_block3d(x)
-            x = self.avgpool(x)
+            x = self.avgpool3d(x)
         else:
             raise ValueError("dim has to be 2 or 3!")
         x = x.view(-1, self.Lv[2] * 1 * 1)
@@ -76,17 +79,17 @@ class Encoder(nn.Module):
         return x
 
 class Projector(nn.Module):
+    ''' Projector network accepts a variable number of layers indicated by depth.
+    Option to include batchnorm after every layer.'''
 
     def __init__(self, Lvpj, hidden_dim, bnorm = False, depth = 2):
         super(Projector, self).__init__()
-        print(f"using projector; batchnorm {bnorm} with depth {depth}")
-
+        print(f"Using projector; batchnorm {bnorm} with depth {depth}")
         nlayer = [nn.BatchNorm1d(Lvpj[0])] if bnorm else []
         list_layers = [nn.Linear(hidden_dim, Lvpj[0])] + nlayer + [nn.ReLU()]
         for _ in range(depth-2):
             list_layers += [nn.Linear(Lvpj[0], Lvpj[0])] + nlayer + [nn.ReLU()]
         list_layers += [nn.Linear(Lvpj[0],Lvpj[1])]
-
         self.proj_block = nn.Sequential(*list_layers)
 
     def forward(self, x):
@@ -184,7 +187,7 @@ class PredictorEig(nn.Module):
         return x
 
 class Net(nn.Module):
-    def __init__(self,Lv,ks,Lvp,nbands,ndos,neval,predict,dim):
+    def __init__(self,Lv=[],ks=7,Lvp=[],nbands=6,ndos=400,neval=1,predict='',dim=2):
         super(Net, self).__init__()
         self.enc = Encoder(Lv,ks,dim)
         if predict == 'bandstructures':
@@ -197,12 +200,14 @@ class Net(nn.Module):
             self.predictor = PredictorDOS(ndos,Lv[-1],Lvp)
         elif predict == 'eigval':
             self.predictor = PredictorEig(neval,Lv[-1],Lvp)
+        else:
+            raise ValueError("invalid prediction problem")
     def forward(self, x):
       x = self.enc(x)
       x = self.predictor(x)
       return x
 
-# define new sub module classes for AE in order to keep the same state dict keys
+# Define new sub module classes for CL in order to keep the same state dict keys
 class Enc(nn.Module):
     def __init__(self,Lv,ks,dim):
         super(Enc, self).__init__()
@@ -210,14 +215,6 @@ class Enc(nn.Module):
     def forward(self, x):
       x = self.enc(x)
       return x
-
-# class Dec(nn.Module):
-#     def __init__(self,Lv,ks):
-#         super(Dec, self).__init__()
-#         self.decoder = Decoder(Lv,ks)
-#     def forward(self, x):
-#       x = self.decoder(x)
-#       return x
 
 class Proj(nn.Module):
     def __init__(self,Lvpj,latent_dim, bnorm = False, depth = 2):
@@ -228,18 +225,20 @@ class Proj(nn.Module):
       return x
 
 class Pred(nn.Module):
-    def __init__(self,latent_dim,Lvp,nbands,ndos,neval,predict,num_predict):
+    def __init__(self,latent_dim=256,Lvp=[],nbands=6,ndos=400,neval=1,predict='',dim=2):
         super(Pred, self).__init__()
         if predict == 'bandstructures':
-            self.predictor = PredictorBS(nbands,latent_dim,num_predict,Lvp)
+            self.predictor = PredictorBS(nbands,latent_dim,625,Lvp)
         elif predict == 'eigvec':
-            self.predictor = PredictorBS(neval,latent_dim,num_predict,Lvp)
+            self.predictor = PredictorBS(neval,latent_dim,62**dim,Lvp)
         elif predict == 'oneband':
             self.predictor = PredictorBS(1,latent_dim,Lvp) # only one branch
         elif predict == 'DOS':
             self.predictor = PredictorDOS(ndos,latent_dim,Lvp)
         elif predict == 'eigval':
             self.predictor = PredictorEig(neval,latent_dim,Lvp)
+        else:
+            raise ValueError("invalid predict problem")
     def forward(self, x):
       x = self.predictor(x)
       return x
