@@ -135,7 +135,7 @@ class PredictorBS(nn.Module):
                 branch = 'band'+str(i)
                 outband = self.branches[branch](x).unsqueeze_(2) # forward pass for each of the remaining bands
                 out = torch.cat((out,outband),dim=2) # concatenate all bands
-        return out ## This is (batchsize, 625, n) if n > 1 or (batchsize,625,1) if n == 1
+        return out ## This has shape (batchsize, 625, n) if n > 1 or (batchsize,625,1) if n == 1
 
 class PredictorDOS(nn.Module):
 

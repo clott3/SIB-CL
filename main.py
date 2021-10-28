@@ -184,7 +184,7 @@ if __name__ == '__main__':
     # TISE data parameters
     parser.add_argument('--neval',type=int, help='if predict eigval or eigvec, specify num of eigvals/eigvecs counting from ground state, default = 1', default=1)
     parser.add_argument('--ndim',type=int, help='if predict eigval or eigvec, specify dimensions: 2 or 3, default = 2', default=2)
-    parser.add_argument('--tisesource',type=str, help='specify source dataset, lr (lowres) or qho, default = lr', default='lr') ## TODO: modify sourceversion for SE
+    parser.add_argument('--tisesource',type=str, help='specify source dataset, lr (lowres) or qho, default = lr', default='lr')
 
     # Training parameters
     parser.add_argument('--nsam', type=int, help='no. of labelled target training samples, default = 100',default=100)
@@ -200,24 +200,24 @@ if __name__ == '__main__':
     parser.add_argument('--no_scheduler',action='store_true',help="Set this flag to not use schedule")
     parser.add_argument('--no_pretrain',action='store_true',help="Set this flag to not pretrain")
     parser.add_argument('--no_finetune',action='store_true',help="Set this flag to not finetune")
-    parser.add_argument('--freeze_enc_ft',action='store_true',help="For pretrain_with_AE/CL, Set this flag to freeze whole enc in predictor finetuning")
+    parser.add_argument('--freeze_enc_ft',action='store_true',help="For sibcl, tl or ssl, set this flag to freeze encoder during finetuning")
 
     # CL specific parameters
-    parser.add_argument('--ssl_mode', type = str, help = 'if sibcl, specify if simclr or byol, default = simclr', default = 'simclr')
+    parser.add_argument('--ssl_mode', type = str, help = 'if sibcl or ssl, specify if simclr or byol, default = simclr', default = 'simclr')
     parser.add_argument('--batchsize_cl', type=int, help='specify batchsize for CL if sibcl or ssl, default = 512', default=512)
     parser.add_argument('--temperature',type=float, help='specify temperature for CL loss function', default=0.1)
-    parser.add_argument('--train_ratio',type=int, help='specify no. of epoch for sibcl training before we train predictor once', default=1)
+    parser.add_argument('--train_ratio',type=int, help='specify no. of epoch for sibcl training before we train predictor once, default = 1', default=1)
 
     # Augmentation parameters
-    parser.add_argument('--translate_pbc', action='store_true', help = 'to randomly translate input image or not (to take care of PBC)')
+    parser.add_argument('--translate_pbc', action='store_true', help = 'to randomly translate input image or not (to take care of PBC). uses rolling translation')
     parser.add_argument('--pg_uniform', action='store_true', help = 'to uniformly sample point group operations (rotations and flips) ')
-    parser.add_argument('--flip', action='store_true', help = 'to randomly flip image ')
-    parser.add_argument('--rotate', action='store_true', help = 'to randomly rotate image')
+    parser.add_argument('--flip', action='store_true', help = 'to randomly apply mirror flip horizontally or vertically')
+    parser.add_argument('--rotate', action='store_true', help = 'to randomly rotate image, one among 4-fold.')
     parser.add_argument('--scale', action='store_true', help = 'to randomly scale input')
     parser.add_argument('--stoch_aug_p', type=float, help = 'stochastic sampling parameter, default = 0.5', default =0.5)
 
     # Visualize model performance
-    parser.add_argument('--minsaveloss',type=float, help='if saveftmodel, specify min fractional loss in which we save ft model', default=0.05)
+    parser.add_argument('--minsaveloss',type=float, help='specify min fractional loss in which we save ft model', default=0.05)
     parser.add_argument('--saveplots',action='store_true',help="Set this flag to save prediction plots")
 
     args = parser.parse_args()
