@@ -34,7 +34,7 @@ To generate the labeled PhC datasets, we first compute their band structures usi
   ```
 
 each program will create a dataset with the eigen-frequencies, group velocities, etc, stored in a `.h5` file (which can be accessed using the h5py package). We then calculate the DOS using the GRR method provided by the MATLAB code from [/boyuanliuoptics/DOS-calculation/](https://github.com/boyuanliuoptics/DOS-calculation/blob/master/DOS_GGR.m). 
-To do so, we first parse the data to create the `.txt` files required as inputs to the program, compute the DOS using MATLAB and then add the DOS labels back to the original `.h5` files. These steps will be executed automatically by simply running the shell script `get_DOS.sh` after modifying the h5 filename identifier defined at the top. Note that for this to run smoothly, python and MATLAB will first need to be added to `PATH`.
+To do so, we first parse the data to create the `.txt` files required as inputs to the program, compute the DOS using MATLAB and then add the DOS labels back to the original `.h5` files. These steps will be executed automatically by simply running the shell script `get_DOS.sh` and entering the h5 filename identifiers when prompted. Note that for this to run smoothly, python and MATLAB will first need to be added to `PATH` and the environment with the installed dependencies should be loaded.
 
 ### Time-independent Schrodinger Equation (TISE)
 Relevant code stored in `generate_datasets/TISE/`. Example usage:
