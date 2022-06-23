@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6710073.svg)](https://doi.org/10.5281/zenodo.6710073)
 # Surrogate- and Invariance-Boosted Contrastive Learning (SIB-CL)
 This repository contains all source code used to generate the results in the article [Surrogate- and invariance-boosted contrastive learning for data-scarce applications in science](https://arxiv.org/abs/2110.08406).
 
