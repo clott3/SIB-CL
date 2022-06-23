@@ -30,11 +30,11 @@ class PhC2D(data.Dataset):
         self.to_load_eps = eps
 
         if domain == 'source':
-            filename = 'cylin-tm-11k-3dosel-EL-max1p2.h5'
+            filename = 'cylin-tm-11k.h5'
             nskip = 0
 
         elif domain == 'target':
-            filename = 'mf1-tm-final-32k-3dosel-EL-max1p2.h5'
+            filename = 'mf1-tm-32k.h5'
             nskip = self.skipsize # To pick good target samples for small sample size
         else:
             raise ValueError("Invalid domain. Either source or target.")
