@@ -14,12 +14,15 @@ Please install the required Python packages:
 A python3 environment can be created prior to this:
 `conda create -n sibcl python=3.8; conda activate sibcl`.
 
-Assess to MATLAB is required to calculate the density-of-states (DOS) of PhCs.
+For generation of the PhC dataset, assess to MATLAB is required to calculate the density-of-states (DOS) of PhCs.
 
 ## Dataset Generation
 ### Photonic Crystals (PhCs)
 
-Relevant code stored in `generate_datasets/PhC/`. 
+The PhC datasets used in this work can be downloaded from this [link](https://www.dropbox.com/sh/ngnosb8klkhxsld/AABxX1jB4SwVkdZ4Sxy0tB2_a?dl=0).
+
+Alternatively, to generate (potentially other variants) of the PhC dataset, please refer to relevant code stored in `generate_datasets/PhC/` and the descriptions below.
+
 Periodic unit cells are defined using a level set of a Fourier sum; different unit cells can be generated using the `get_random()` method of the `FourierPhC` class defined in `fourier_phc.py`.
 
 To generate the labeled PhC datasets, we first compute their band structures using MPB. This can be executed via:
