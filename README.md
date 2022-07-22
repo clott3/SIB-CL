@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6710073.svg)](https://doi.org/10.5281/zenodo.6710073)
 # Surrogate- and Invariance-Boosted Contrastive Learning (SIB-CL)
-This repository contains all source code used to generate the results in the article [Surrogate- and invariance-boosted contrastive learning for data-scarce applications in science](https://arxiv.org/abs/2110.08406).
+This repository contains all source code used to generate the results in the article [Surrogate- and invariance-boosted contrastive learning for data-scarce applications in science](https://doi.org/10.1038/s41467-022-31915-y).
 
 - The folder `generate_datasets` contains all numerical programs used to generate the datasets, for both Photonic Crystals (PhC) and the Time-independent Schrodinger Equation (TISE)
 - `main.py` is the main code used to train the neural networks (explained in detail below)
